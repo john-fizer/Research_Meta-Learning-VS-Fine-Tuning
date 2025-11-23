@@ -4,7 +4,7 @@
 
 This project implements advanced AI engineering frameworks for researching meta-learning, self-optimizing prompts, and closed-loop reinforcement systems.
 
-**Core Research Question:** Can meta-prompting outperform static fine-tuning?
+**Core Research Question:** Can adaptive meta-prompting outperform static prompt engineering?
 
 ## System Architecture
 

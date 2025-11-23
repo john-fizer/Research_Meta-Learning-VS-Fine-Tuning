@@ -1,12 +1,14 @@
-# Meta-Learning & Self-Optimizing Systems
+# Meta-Learning vs Fine-Tuning Comparison (v2.0)
 
-Advanced AI engineering framework for researching meta-learning, self-optimizing prompts, and closed-loop reinforcement systems.
+**Research Question:** Can adaptive meta-prompting outperform model fine-tuning?
+
+Advanced AI engineering framework comparing self-optimizing meta-prompting against fine-tuned language models.
 
 ## Overview
 
-This module implements two complementary approaches to adaptive AI systems:
+This project implements a comprehensive comparison framework testing two approaches:
 
-### A. Adaptive Curriculum Learning Agent (ACLA)
+### A. Adaptive Curriculum Learning Agent (ACLA) - Meta-Prompting
 An LLM that rewrites its own training prompts to improve task accuracy across iterations.
 
 **Key Features:**
@@ -15,9 +17,17 @@ An LLM that rewrites its own training prompts to improve task accuracy across it
 - Performance tracking and convergence detection
 - Automatic prompt improvement based on feedback
 
-**Research Question:** Can meta-prompting outperform static fine-tuning?
+### B. Fine-Tuning Module - Model Optimization (NEW in v2.0) 🆕
+Fine-tune small language models (DistilBERT, BERT, RoBERTa) on task-specific data.
 
-### B. Closed-Loop Reinforcement System (CLRS)
+**Key Features:**
+- Full HuggingFace Transformers integration
+- Support for classification and generation models
+- GPU acceleration support
+- Model registry and comparison framework
+- Fair evaluation against meta-prompting
+
+### C. Closed-Loop Reinforcement System (CLRS)
 A feedback engine where user input continuously trains and refines a local model.
 
 **Key Features:**
@@ -41,6 +51,11 @@ app/meta_learning/
 │   ├── prompt_evolver.py          # Prompt evolution engine
 │   └── performance_tracker.py     # Performance monitoring
 │
+├── fine_tuning/                   # 🆕 Fine-Tuning Module (v2.0)
+│   ├── trainer.py                 # Full fine-tuning pipeline
+│   ├── data_formatter.py          # Dataset formatting
+│   └── model_manager.py           # Model selection & registry
+│
 ├── clrs/                          # Closed-Loop Reinforcement System
 │   ├── reinforcement_system.py    # Main CLRS implementation
 │   ├── drift_detector.py          # Drift detection & monitoring
@@ -53,9 +68,10 @@ app/meta_learning/
 │   └── sentiment140.py            # Sentiment140 dataset
 │
 ├── experiments/                   # Experiment framework
-│   ├── runner.py                  # Experiment orchestration
+│   ├── runner.py                  # Meta-prompting experiments
 │   ├── evaluator.py               # Model evaluation
-│   └── comparator.py              # Result comparison
+│   ├── comparator.py              # Result comparison
+│   └── fine_tuning_experiment.py  # 🆕 Fine-tuning comparison (v2.0)
 │
 └── utils/                         # Utilities
     ├── visualizer.py              # Visualization tools
@@ -65,13 +81,20 @@ app/meta_learning/
 ## Installation
 
 ```bash
-# The meta-learning module is part of the main project
-# Ensure all dependencies are installed:
+# Install all dependencies (includes v2.0 fine-tuning packages):
 pip install -r requirements.txt
 
-# Additional optional dependencies for visualization:
+# New in v2.0:
+# - transformers (HuggingFace models)
+# - datasets (dataset handling)
+# - accelerate (GPU acceleration)
+# - sentencepiece (tokenization)
+
+# Optional: visualization
 pip install matplotlib seaborn
 ```
+
+**GPU Support:** Fine-tuning runs 10-100x faster with a GPU. CPU works but is slower.
 
 ## Quick Start
 
@@ -154,7 +177,7 @@ from app.meta_learning.datasets import Sentiment140Loader
 runner = ExperimentRunner(llm_client=your_client)
 dataset = Sentiment140Loader()
 
-# Run comparison: meta-prompting vs static baseline
+# Run comparison: adaptive meta-prompting vs static prompts
 comparison = await runner.run_comparison_study(
     dataset_name="sentiment140",
     dataset_loader=lambda n: dataset.get_samples(n),
@@ -165,7 +188,7 @@ comparison = await runner.run_comparison_study(
 
 # Results
 if comparison['meta_prompting_wins']:
-    print("✓ Meta-prompting outperforms static baseline!")
+    print("✓ Adaptive meta-prompting outperforms static prompts!")
     print(f"Win margin: {comparison['win_margin']:.4f}")
 ```
 
@@ -193,7 +216,7 @@ python examples/meta_learning/example_comparison.py
 
 ### 1. Meta-Prompting Research
 
-**Question:** Can meta-prompting outperform static fine-tuning?
+**Question:** Can adaptive meta-prompting outperform static prompt engineering?
 
 **Approach:**
 - Test ACLA on multiple datasets (CommonsenseQA, Sentiment140, etc.)

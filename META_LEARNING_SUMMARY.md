@@ -72,7 +72,7 @@ Successfully implemented a comprehensive meta-learning and self-optimizing syste
 
 ### D. Experiment Framework
 
-**Purpose:** Orchestrate and compare experiments to answer: "Can meta-prompting outperform static fine-tuning?"
+**Purpose:** Orchestrate and compare experiments to answer: "Can adaptive meta-prompting outperform static prompt engineering?"
 
 **Key Files:**
 - `app/meta_learning/experiments/runner.py` - Experiment orchestration
@@ -112,7 +112,7 @@ Three complete working examples:
 
 ## Research Questions Addressed
 
-### 1. Can meta-prompting outperform static fine-tuning?
+### 1. Can adaptive meta-prompting outperform static prompt engineering?
 
 **Methodology:**
 - Run ACLA with prompt evolution
