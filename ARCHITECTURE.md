@@ -1,422 +1,361 @@
-# Holographic Astrology Platform - Architecture Guide
+# Meta-Learning & Self-Optimizing Systems - Architecture
 
-## Philosophy: Holographic Synthesis
+## Overview
 
-The core concept is that different astrological systems provide **complementary perspectives** on the same truth, like viewing a hologram from different angles. Each view adds clarity rather than contradiction.
+This project implements advanced AI engineering frameworks for researching meta-learning, self-optimizing prompts, and closed-loop reinforcement systems.
 
-### What "Holographic" Means
+**Core Research Question:** Can meta-prompting outperform static fine-tuning?
 
-1. **Multi-System Charts**
-   - Placidus houses show temporal emphasis
-   - Whole Sign houses show sign-based themes
-   - Vedic/Nakshatras add depth through lunar mansions
-   - Decans and degree theory provide refinement
-
-   **These don't contradict** - they clarify each other, like different instruments in an orchestra.
-
-2. **Multi-Technique Predictions**
-   - Secondary Progressions: Internal psychological timing
-   - Transits: External events and triggers
-   - Zodiacal Releasing: Fate/destiny periods
-   - Loosening of Bonds: Critical transition points
-
-   **When they agree (confluence)** = High confidence prediction
-
-3. **Modular Feedback Loops**
-   - Each technique has **separate** ML training
-   - If progressions work but transits don't → refine transits, keep progressions
-   - No technique drags down others
-   - Remove underperforming techniques without affecting the system
-
-## Architecture Overview
+## System Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    Frontend (Future)                         │
-│  • Multi-chart overlay visualization                         │
-│  • Timeline with confluent predictions                       │
-│  • Feedback forms per technique                              │
-└─────────────────────────────────────────────────────────────┘
-                            ↕
-┌─────────────────────────────────────────────────────────────┐
-│                    FastAPI Backend                           │
-│  /chart/calculate          - Multi-system chart generation   │
-│  /interpretation/synthesize - LLM holographic synthesis      │
-│  /predictions/all          - Confluence analysis             │
-│  /feedback/submit          - Modular feedback collection     │
-│  /ml/performance           - Technique comparison            │
-└─────────────────────────────────────────────────────────────┘
-                            ↕
-┌─────────────────────────────────────────────────────────────┐
-│                Core Calculation Engines                      │
-│  • ChartCalculator: Swiss Ephemeris integration             │
-│  • VedicCalculator: Nakshatras, dashas, yogas               │
-│  • ProgressionsEngine: Secondary progressions               │
-│  • TransitsEngine: Real-time planetary positions            │
-│  • ZodiacalReleasingEngine: Hellenistic timing              │
-│  • LooseningBondsEngine: ZR refinement                      │
-└─────────────────────────────────────────────────────────────┘
-                            ↕
-┌─────────────────────────────────────────────────────────────┐
-│                LLM Integration Layer                         │
-│  • ChartNarrator: Synthesizes multi-system insights         │
-│  • Confluence Interpreter: Analyzes technique agreement     │
-│  • Supports: Anthropic Claude, OpenAI GPT-4                 │
-└─────────────────────────────────────────────────────────────┘
-                            ↕
-┌─────────────────────────────────────────────────────────────┐
-│            ML Training & Feedback Pipeline                   │
-│  • FeedbackProcessor: Collects technique-specific data      │
-│  • TechniqueTrainer: Independent model per technique        │
-│  • ModelRegistry: Version control and A/B testing           │
-│  • Performance Monitor: Recommends keep/refine/remove       │
-└─────────────────────────────────────────────────────────────┘
-                            ↕
-┌─────────────────────────────────────────────────────────────┐
-│                  Database (PostgreSQL)                       │
-│  • Natal charts & calculations                              │
-│  • MODULAR feedback tables (one per technique)              │
-│  • Event tracking & correlations                            │
-│  • Training datasets (isolated per technique)               │
-└─────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                     RESEARCH FRAMEWORK                           │
+│  Meta-Learning vs Fine-Tuning Comparative Analysis              │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+        ┌─────────────────────┴──────────────────────┐
+        │                                             │
+        ▼                                             ▼
+┌───────────────────┐                    ┌───────────────────────┐
+│       ACLA        │                    │        CLRS           │
+│ (Meta-Prompting)  │                    │ (Reinforcement Loop)  │
+└───────────────────┘                    └───────────────────────┘
+        │                                             │
+        ├─── Prompt Evolution                         ├─── Drift Detection
+        ├─── Performance Tracking                     ├─── Alignment Scoring
+        └─── Curriculum Learning                      └─── Coherence Analysis
 ```
 
-## Database Schema: Modular Feedback
+## Core Components
 
-### Core Chart Data
-- `natal_charts`: Birth data and user info
-- `chart_calculations`: Calculated data per house system
-- `chart_interpretations`: LLM-generated syntheses
-- `interpretation_feedback`: User ratings on interpretations
+### 1. Adaptive Curriculum Learning Agent (ACLA)
 
-### Predictions (One-to-One Relationships)
-- `predictions`: Base prediction record
-- `progression_predictions`: Progression-specific data
-- `transit_predictions`: Transit-specific data
-- `zodiacal_releasing_predictions`: ZR-specific data
-- `loosening_bonds_predictions`: LB-specific data
+**Purpose:** Self-optimizing LLM that rewrites its own training prompts to improve task accuracy
 
-### Modular Feedback (Isolated Tables)
-- `progression_feedback`: **Only** progression accuracy
-- `transit_feedback`: **Only** transit accuracy
-- `zr_feedback`: **Only** ZR accuracy
-- `lb_feedback`: **Only** LB accuracy
+**Location:** `/acla/`
 
-**Why separate tables?**
-- Independent ML training per technique
-- Remove/refine one without affecting others
-- Different metrics per technique (e.g., LB has "refinement_value")
-- Clear performance comparison
+**Key Classes:**
+- `AdaptiveCurriculumAgent` - Main orchestrator
+- `PromptEvolver` - Handles prompt mutation strategies
+- `PerformanceTracker` - Monitors metrics and convergence
 
-### Event Tracking
-- `user_events`: Actual life events reported by users
-- `event_prediction_correlations`: Links events to predictions
-
-## Data Flow: Chart Interpretation
-
+**Flow:**
 ```
-1. User provides birth data
-   ↓
-2. Calculate charts in multiple systems
-   - Placidus (tropical)
-   - Whole Sign (tropical)
-   - Vedic Whole (sidereal) + Nakshatras
-   - Add decans and degree theory
-   ↓
-3. LLM synthesizes holographic interpretation
-   - Identifies reinforcing themes
-   - Explains complementary differences
-   - Produces unified narrative
-   ↓
-4. User rates interpretation
-   - Overall accuracy (1-5)
-   - Resonance per house system
-   ↓
-5. Feedback trains LLM prompts
-   - A/B test prompt versions
-   - Refine synthesis approach
+Initial Prompt → Evaluate → Analyze Performance →
+Evolve Prompt → Re-evaluate → Track Improvement →
+Repeat until Convergence
 ```
 
-## Data Flow: Predictions with Confluence
+**Evolution Strategies:**
+1. **Performance-based:** Optimize based on accuracy metrics
+2. **Error analysis:** Analyze failure patterns
+3. **Ablation testing:** Remove/modify components
+4. **Chain-of-thought:** Add reasoning steps
+5. **Few-shot:** Optimize example selection
 
-```
-1. User requests predictions for date range
-   ↓
-2. Run ALL prediction techniques in parallel
-   - Progressions: Progressed-to-natal aspects
-   - Transits: Transiting-to-natal aspects
-   - ZR: Active periods and peaks
-   - LB: Loosening transition points
-   ↓
-3. Find temporal confluence
-   - Cluster predictions within 30-day windows
-   - If 2+ techniques agree → High confidence
-   ↓
-4. LLM interprets confluence
-   - "Progressions + Transits + ZR all indicate..."
-   - Holographic confirmation
-   ↓
-5. User validates predictions over time
-   - Event occurred? (yes/no)
-   - Actual date vs predicted date
-   - Accuracy rating
-   ↓
-6. Modular feedback storage
-   - Progression feedback → progression_feedback table
-   - Transit feedback → transit_feedback table
-   - ZR feedback → zr_feedback table
-   - LB feedback → lb_feedback table
-   ↓
-7. Independent ML training
-   - Train progression model on progression_feedback
-   - Train transit model on transit_feedback
-   - Etc. (completely isolated)
-   ↓
-8. Performance monitoring
-   - Compare accuracy across techniques
-   - Recommend: KEEP / REFINE / REMOVE
-   ↓
-9. System evolution
-   - Keep high-performing techniques
-   - Refine moderate performers
-   - Remove poor performers
-   - Add new techniques
-```
-
-## ML Architecture: Why Not CNNs for Chart Reading?
-
-### The Question
-"Should we train a CNN to visually read chart wheels?"
-
-### The Answer: No (Use Direct Data Instead)
-
-#### CNN Approach (Visual Parsing)
-```
-Chart Data → Generate Image → CNN Reads Image → Extract Positions → Interpret
-```
-**Problems:**
-- Adds unnecessary layer of abstraction
-- Visual recognition is approximate
-- Computationally expensive
-- Harder to debug and explain
-- We already have exact mathematical data!
-
-#### Direct Data Approach (Mathematical)
-```
-Chart Data → Extract Features → ML Model → Interpret
-```
-**Benefits:**
-- Uses exact planetary positions (Swiss Ephemeris precision)
-- Fast and efficient
-- Interpretable features
-- Easy to debug
-- Modular architecture
-
-### Where Computer Vision COULD Help
-1. **Multi-chart overlay pattern recognition**
-   - Visual patterns across stacked charts
-   - Grand Trines, T-Squares, Kites in composite views
-
-2. **Aspect configuration detection**
-   - Geometric patterns in chart wheels
-   - Secondary validation layer
-
-3. **Anomaly detection**
-   - Unusual configurations across multiple systems
-   - Visual outlier identification
-
-**But these are supplementary, not primary tools.**
-
-### Current ML Stack
+**Data Model:**
 ```python
-# Feature extraction (mathematical)
-features = [
-    planet_positions,      # Exact degrees
-    house_placements,      # Precise houses
-    aspect_orbs,          # Calculated angles
-    nakshatra_rulers,     # Vedic data
-    progression_speeds,   # Temporal data
-]
-
-# Structured ML models
-models = [
-    RandomForestClassifier(),      # Event occurrence
-    GradientBoostingRegressor(),   # Timing accuracy
-]
-
-# LLM for holistic synthesis
-llm = Claude()  # Or GPT-4
-interpretation = llm.synthesize(multi_system_data)
+CurriculumConfig:
+  - initial_prompt: str
+  - dataset_name: str
+  - max_iterations: int
+  - min_performance_threshold: float
+  - evolution_strategies: List[str]
+  - llm_provider: str
+  - model_name: str
 ```
 
-## Modular Training Pipeline
+### 2. Closed-Loop Reinforcement System (CLRS)
 
-### Per-Technique Training Process
+**Purpose:** Feedback-driven model adaptation with drift monitoring
+
+**Location:** `/clrs/`
+
+**Key Classes:**
+- `ClosedLoopSystem` - Main feedback orchestrator
+- `DriftDetector` - Monitors behavioral drift
+- `AlignmentScorer` - Measures user preference alignment
+- `CoherenceAnalyzer` - Detects emergent patterns
+
+**Flow:**
+```
+Generate Output → Collect Feedback →
+Detect Drift → Score Alignment →
+Analyze Coherence → Update Model →
+Repeat Cycle
+```
+
+**Metrics Tracked:**
+- **Drift Score:** Vocabulary, distribution, and length changes
+- **Alignment Score:** Preference matching
+- **Coherence Score:** Lexical, pattern, and diversity metrics
+
+**Training Cycle:**
+```python
+TrainingCycle:
+  - cycle_id: int
+  - outputs: List[str]
+  - feedback: List[Dict]
+  - drift_score: float
+  - alignment_score: float
+  - coherence_score: float
+  - timestamp: datetime
+```
+
+### 3. Dataset Loaders
+
+**Purpose:** Standardized data loading for experiments
+
+**Location:** `/datasets/`
+
+**Supported Datasets:**
+- **CommonsenseQA:** Question answering with reasoning
+- **Sentiment140:** Sentiment classification
+- **Base Interface:** Extensible for custom datasets
+
+**Interface:**
+```python
+BaseDatasetLoader:
+  - load_data() → None
+  - get_sample(n: int) → List[Dict]
+  - validate_sample(sample: Dict) → bool
+  - format_prompt(sample: Dict) → str
+```
+
+### 4. Experiment Framework
+
+**Purpose:** Orchestrate and compare experiments
+
+**Location:** `/experiments/`
+
+**Key Classes:**
+- `ExperimentRunner` - Run comparative studies
+- `ModelEvaluator` - Evaluate prompt performance
+- `ExperimentComparator` - Statistical comparison
+
+**Experiment Types:**
+
+**A. Meta-Prompting Experiment:**
+```python
+run_meta_prompting_experiment(
+    config: ExperimentConfig,
+    dataset_loader: Callable,
+    initial_prompt: str
+) → ExperimentResult
+```
+
+**B. Static Baseline Experiment:**
+```python
+run_static_baseline_experiment(
+    config: ExperimentConfig,
+    dataset_loader: Callable,
+    prompt: str
+) → ExperimentResult
+```
+
+**C. Comparison Study:**
+```python
+run_comparison_study(
+    dataset_name: str,
+    dataset_loader: Callable,
+    initial_prompt: str,
+    num_iterations: int,
+    sample_size: int
+) → Dict[str, Any]
+```
+
+**Results Structure:**
+```python
+ExperimentResult:
+  - config: ExperimentConfig
+  - final_performance: Dict[str, float]
+  - performance_history: List[Dict[str, float]]
+  - best_performance: Dict[str, float]
+  - improvement: float
+  - convergence_iteration: int
+  - timestamp: datetime
+  - metadata: Dict[str, Any]
+```
+
+### 5. Utilities
+
+**Purpose:** Visualization and logging support
+
+**Location:** `/utils/`
+
+**Components:**
+- `MetaLearningVisualizer` - Plot performance curves, convergence analysis
+- `ExperimentLogger` - Structured logging with experiment tracking
+
+## Data Flow
+
+### ACLA Experiment Flow
+
+```
+1. Load Dataset
+   ↓
+2. Initialize Agent with Config
+   ↓
+3. For each iteration:
+   ├─ Evaluate current prompt
+   ├─ Track performance metrics
+   ├─ Analyze errors/patterns
+   ├─ Evolve prompt using strategy
+   └─ Check convergence
+   ↓
+4. Save results and best prompt
+```
+
+### CLRS Feedback Flow
+
+```
+1. Generate outputs from inputs
+   ↓
+2. Collect user feedback
+   ↓
+3. Analyze cycle:
+   ├─ Detect drift (vocabulary, distribution, length)
+   ├─ Score alignment (preference matching)
+   └─ Analyze coherence (patterns, diversity)
+   ↓
+4. Update model weights
+   ↓
+5. Save checkpoint
+   ↓
+6. Repeat for next cycle
+```
+
+## Storage Structure
+
+```
+data/meta_learning/
+├── experiments/
+│   ├── {dataset}_meta_prompting_{timestamp}.json
+│   ├── {dataset}_static_baseline_{timestamp}.json
+│   └── comparison_{dataset}_{timestamp}.json
+│
+├── acla/
+│   └── {experiment_name}/
+│       ├── checkpoints/
+│       │   └── iteration_{n}.json
+│       └── prompts/
+│           └── evolved_prompts.json
+│
+└── clrs/
+    └── {experiment_name}/
+        ├── cycles/
+        │   └── cycle_{n}.json
+        └── feedback/
+            └── feedback_history.json
+```
+
+## Key Research Metrics
+
+### Performance Metrics
+- **Accuracy:** Correct predictions / Total predictions
+- **Precision:** True positives / (True positives + False positives)
+- **Recall:** True positives / (True positives + False negatives)
+- **F1 Score:** Harmonic mean of precision and recall
+
+### Meta-Learning Metrics
+- **Improvement Rate:** (Final - Initial) / Initial
+- **Convergence Iteration:** Iteration where performance plateaus
+- **Strategy Effectiveness:** Which evolution strategies work best
+- **Sample Efficiency:** Performance vs dataset size
+
+### CLRS Metrics
+- **Drift Score:** Behavioral stability over cycles
+- **Alignment Score:** User preference matching
+- **Coherence Score:** Internal consistency
+- **Feedback Efficiency:** Performance vs feedback amount
+
+## Integration Points
+
+### LLM Providers
+- **Anthropic Claude:** Primary provider (claude-3-5-sonnet)
+- **OpenAI:** Alternative provider support
+- **Custom Clients:** Extensible interface
+
+### Evaluation Functions
+```python
+async def evaluate_prompt(
+    prompt: str,
+    samples: List[Dict],
+    llm_client: Any,
+    dataset_name: str
+) → Dict[str, float]
+```
+
+### Dataset Loaders
+```python
+def dataset_loader(n: Optional[int]) → List[Dict]
+```
+
+## Configuration Management
+
+All experiments are configured via dataclasses:
 
 ```python
-# 1. Collect technique-specific feedback
-processor = FeedbackProcessor(db_session)
-prog_data = processor.collect_progression_feedback()
+CurriculumConfig(
+    initial_prompt="...",
+    dataset_name="commonsense_qa",
+    max_iterations=10,
+    min_performance_threshold=0.8,
+    llm_provider="anthropic",
+    model_name="claude-3-5-sonnet-20241022"
+)
 
-# 2. Train isolated model
-trainer = TechniqueTrainer('progressions')
-metrics = trainer.train_event_prediction_model(X, y)
-
-# 3. Save and version
-trainer.save_model()
-registry.register_model('progressions', version, metrics)
-
-# 4. Compare performance
-comparison = processor.compare_technique_performance()
-print(comparison)
-
-#    technique  accuracy  recommendation
-# 0  progressions   0.72   GOOD_REFINE
-# 1  transits       0.68   GOOD_REFINE
-# 2  zr             0.45   POOR_MAJOR_REFINEMENT
-# 3  lb             0.55   GOOD_REFINE
-
-# 5. Decision
-if technique_performance < 0.3:
-    remove_technique()
-elif technique_performance < 0.5:
-    major_refinement_needed()
-else:
-    continue_refinement()
+ExperimentConfig(
+    name="experiment_name",
+    description="...",
+    dataset_name="...",
+    approach="meta_prompting",  # or "static_baseline"
+    num_iterations=10,
+    sample_size=100
+)
 ```
 
-### A/B Testing and Evolution
+## Extension Points
 
-```python
-# Version 1: Basic progression model
-model_v1 = train_progression_model(basic_features)
-registry.register_model('progressions', 'v1', metrics_v1)
+### Adding New Datasets
+1. Extend `BaseDatasetLoader` in `/datasets/`
+2. Implement `load_data()`, `get_sample()`, `format_prompt()`
+3. Add to dataset registry
 
-# Version 2: Enhanced with nakshatra data
-model_v2 = train_progression_model(enhanced_features)
-registry.register_model('progressions', 'v2', metrics_v2)
+### Adding Evolution Strategies
+1. Add strategy to `PromptEvolver` class
+2. Implement evolution logic
+3. Add to `CurriculumConfig.evolution_strategies`
 
-# Compare
-if metrics_v2['accuracy'] > metrics_v1['accuracy']:
-    registry.promote_to_production('progressions', 'v2')
-```
+### Adding Metrics
+1. Extend `ModelEvaluator` in `/experiments/evaluator.py`
+2. Add metric calculation
+3. Update result structures
 
-## Holographic Confirmation: The Key Insight
+## Dependencies
 
-### Single Technique (Weak Confidence)
-```
-Progressions indicate: Career change in March 2024
-Confidence: 60%
-```
+See `requirements.txt` for full list:
+- **PyTorch:** Deep learning framework
+- **NumPy/Pandas:** Data manipulation
+- **scikit-learn:** ML utilities and metrics
+- **matplotlib:** Visualization
+- **requests:** Dataset downloading
+- **tqdm:** Progress bars
+- **rich:** Enhanced terminal output
 
-### Multiple Techniques Agree (Strong Confidence)
-```
-Progressions: Career change in March 2024
-Transits: Jupiter conjunct MC in March 2024
-ZR: Peak period in March 2024
-LB: Major transition on March 15, 2024
+## CI/CD Integration
 
-Confluence Analysis: ALL TECHNIQUES AGREE
-Confidence: 92%
-Action: HIGH PROBABILITY EVENT
-```
+GitHub Actions workflow: `.github/workflows/run_meta_learning.yml`
+- Runs experiments on push
+- Generates comparison reports
+- Archives results
 
-This is **holographic confirmation** - independent methods converging on the same truth.
+## Best Practices
 
-## Event Categories
-
-The system predicts specific life events:
-
-### Career
-- New job
-- Promotion
-- Termination
-- Business start
-
-### Relationships
-- Start dating
-- Marriage
-- Breakup
-- Divorce
-
-### Family
-- Birth of child
-- Death of family member
-- Health crisis
-
-### Financial
-- Windfall
-- Loss
-- Major investment
-
-### Personal
-- Education/learning
-- Spiritual awakening
-- Health changes
-- Relocation
-
-Each event type is tracked and correlated with predictions for ML training.
-
-## Key Design Principles
-
-1. **Precision over Approximation**
-   - Use exact mathematical calculations
-   - Swiss Ephemeris for planetary positions
-   - No visual parsing of data we already have
-
-2. **Complementary over Contradictory**
-   - Multiple systems clarify, not confuse
-   - LLM synthesizes unified understanding
-   - Holographic perspective
-
-3. **Modular over Monolithic**
-   - Independent feedback per technique
-   - Remove poor performers without breaking system
-   - A/B test improvements safely
-
-4. **Evidence-Based Evolution**
-   - Track real accuracy metrics
-   - Let data decide what stays
-   - Continuous improvement through feedback
-
-5. **User-Centric Learning**
-   - Easy feedback submission
-   - Transparent performance metrics
-   - System improves from user validation
-
-## Future Enhancements
-
-1. **Frontend Development**
-   - Interactive multi-chart visualization
-   - Timeline view with confluent predictions
-   - Feedback interface
-
-2. **Additional Techniques**
-   - Solar Arc Directions
-   - Profections
-   - Transits to progressed chart
-   - Eclipses
-
-3. **Advanced ML**
-   - Deep learning for pattern recognition
-   - Time series forecasting
-   - Natural language processing for user notes
-
-4. **Social Features**
-   - Compare accuracy across users
-   - Crowdsourced validation
-   - Community feedback
-
-## Getting Started
-
-See README.md for installation and usage instructions.
-
-## Questions?
-
-The architecture is designed to be:
-- **Precise** (mathematical over visual)
-- **Modular** (independent technique refinement)
-- **Holographic** (complementary multi-system synthesis)
-- **Adaptive** (ML-driven continuous improvement)
-
-This is the foundation for a truly next-generation astrology platform.
+1. **Always save checkpoints:** Use `save_path` parameter
+2. **Track all experiments:** Log configurations and results
+3. **Use async/await:** For concurrent evaluations
+4. **Validate datasets:** Check sample format before running
+5. **Monitor convergence:** Stop when performance plateaus
+6. **Compare fairly:** Same dataset size, iterations, and LLM
