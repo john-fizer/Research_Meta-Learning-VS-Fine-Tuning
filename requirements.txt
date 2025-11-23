@@ -6,7 +6,7 @@ pydantic-settings==2.1.0
 
 # Astrology Calculations
 pyswisseph==2.10.3.2
-kerykeion==4.7.2
+kerykeion==4.26.3   
 pytz==2024.1
 python-dateutil==2.8.2
 
