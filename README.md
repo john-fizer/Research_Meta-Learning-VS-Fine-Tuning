@@ -1,10 +1,10 @@
-# Meta-Learning & Self-Optimizing Systems
+# Meta-Learning & Self-Optimizing Prompts (v1.0)
 
-Advanced AI engineering framework for researching meta-learning, self-optimizing prompts, and closed-loop reinforcement systems.
+Advanced AI engineering framework comparing self-optimizing prompt engineering vs static prompts for LLM task performance.
 
 ## Overview
 
-This module implements two complementary approaches to adaptive AI systems:
+This project implements two complementary approaches to adaptive AI systems:
 
 ### A. Adaptive Curriculum Learning Agent (ACLA)
 An LLM that rewrites its own training prompts to improve task accuracy across iterations.
@@ -15,7 +15,7 @@ An LLM that rewrites its own training prompts to improve task accuracy across it
 - Performance tracking and convergence detection
 - Automatic prompt improvement based on feedback
 
-**Research Question:** Can meta-prompting outperform static fine-tuning?
+**Research Question:** Can adaptive meta-prompting outperform static prompt engineering?
 
 ### B. Closed-Loop Reinforcement System (CLRS)
 A feedback engine where user input continuously trains and refines a local model.
@@ -154,7 +154,7 @@ from app.meta_learning.datasets import Sentiment140Loader
 runner = ExperimentRunner(llm_client=your_client)
 dataset = Sentiment140Loader()
 
-# Run comparison: meta-prompting vs static baseline
+# Run comparison: adaptive meta-prompting vs static prompts
 comparison = await runner.run_comparison_study(
     dataset_name="sentiment140",
     dataset_loader=lambda n: dataset.get_samples(n),
@@ -165,7 +165,7 @@ comparison = await runner.run_comparison_study(
 
 # Results
 if comparison['meta_prompting_wins']:
-    print("✓ Meta-prompting outperforms static baseline!")
+    print("✓ Adaptive meta-prompting outperforms static prompts!")
     print(f"Win margin: {comparison['win_margin']:.4f}")
 ```
 
@@ -193,7 +193,7 @@ python examples/meta_learning/example_comparison.py
 
 ### 1. Meta-Prompting Research
 
-**Question:** Can meta-prompting outperform static fine-tuning?
+**Question:** Can adaptive meta-prompting outperform static prompt engineering?
 
 **Approach:**
 - Test ACLA on multiple datasets (CommonsenseQA, Sentiment140, etc.)
