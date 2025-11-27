@@ -4,13 +4,39 @@ numpy==1.26.3
 pandas==2.2.0
 scikit-learn==1.4.0
 
+# === GRADIENT BOOSTING ===
+xgboost>=2.0.0
+lightgbm>=4.0.0
+catboost>=1.2.0
+
+# === DEEP LEARNING ===
+tensorflow>=2.15.0
+keras>=3.0.0
+
+# === NLP ===
+transformers>=4.35.0
+sentence-transformers>=2.2.0
+spacy>=3.7.0
+nltk>=3.8.0
+
+# === TIME SERIES ===
+prophet>=1.1.0
+statsmodels>=0.14.0
+
+# === DATA PROCESSING ===
+scipy>=1.11.0
+imbalanced-learn>=0.11.0
+
 # === UTILITIES ===
 tqdm==4.66.2
 python-dotenv==1.0.1
 requests==2.31.0
 
-# === OPTIONAL FOR VISUALIZATION ===
+# === VISUALIZATION ===
 matplotlib==3.8.2
+seaborn>=0.13.0
+plotly>=5.18.0
 
-# === OPTIONAL FOR NICER OUTPUT ===
+# === OUTPUT & REPORTING ===
 rich==13.7.0
+tabulate>=0.9.0

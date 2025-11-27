@@ -2,9 +2,36 @@
 
 Advanced AI engineering framework comparing self-optimizing prompt engineering vs static prompts for LLM task performance.
 
+## 🆕 NEW: Plug-and-Play ML/DL Framework
+
+**Universal, intelligent machine learning system - just load your data and go!**
+
+```python
+from app.plug_and_play import PlugAndPlayML
+
+model = PlugAndPlayML()
+results = model.run("your_data.csv")  # That's it!
+```
+
+The system automatically:
+- ✅ Analyzes your dataset
+- ✅ Detects problem type (classification, regression, NLP, etc.)
+- ✅ Selects optimal models and frameworks
+- ✅ Preprocesses data intelligently
+- ✅ Generates comprehensive reports
+
+**See [PLUG_AND_PLAY_README.md](PLUG_AND_PLAY_README.md) for complete documentation.**
+
+**Quick Start:**
+```bash
+python examples/plug_and_play/simple_demo.py
+```
+
+---
+
 ## Overview
 
-This project implements two complementary approaches to adaptive AI systems:
+This project implements three complementary approaches to adaptive AI systems:
 
 ### A. Adaptive Curriculum Learning Agent (ACLA)
 An LLM that rewrites its own training prompts to improve task accuracy across iterations.
@@ -32,22 +59,49 @@ A feedback engine where user input continuously trains and refines a local model
 - Can alignment be maintained with minimal feedback?
 - What emergent patterns appear in model coherence?
 
+### C. Plug-and-Play ML/DL Framework
+A universal AutoML system that automatically analyzes datasets and selects optimal models.
+
+**Key Features:**
+- Automatic data analysis and problem classification
+- Intelligent model selection across all frameworks
+- Smart preprocessing and feature engineering
+- Support for traditional ML, deep learning, NLP, time series
+- Integration with ACLA/CLRS for meta-learning
+
+**Use Case:** Load any CSV and get optimal ML pipeline automatically - no configuration needed!
+
 ## Architecture
 
 ```
-app/meta_learning/
-├── acla/                          # Adaptive Curriculum Learning Agent
-│   ├── curriculum_agent.py        # Main ACLA implementation
-│   ├── prompt_evolver.py          # Prompt evolution engine
-│   └── performance_tracker.py     # Performance monitoring
+app/
+├── meta_learning/                 # Meta-Learning Systems
+│   ├── acla/                      # Adaptive Curriculum Learning Agent
+│   │   ├── curriculum_agent.py    # Main ACLA implementation
+│   │   ├── prompt_evolver.py      # Prompt evolution engine
+│   │   └── performance_tracker.py # Performance monitoring
+│   │
+│   ├── clrs/                      # Closed-Loop Reinforcement System
+│   │   ├── reinforcement_system.py # Main CLRS implementation
+│   │   ├── drift_detector.py      # Drift detection & monitoring
+│   │   ├── alignment_scorer.py    # Alignment scoring
+│   │   └── coherence_analyzer.py  # Coherence analysis
+│   │
+│   └── datasets/                  # Dataset loaders
 │
-├── clrs/                          # Closed-Loop Reinforcement System
-│   ├── reinforcement_system.py    # Main CLRS implementation
-│   ├── drift_detector.py          # Drift detection & monitoring
-│   ├── alignment_scorer.py        # Alignment scoring
-│   └── coherence_analyzer.py      # Coherence analysis
-│
-├── datasets/                      # Dataset loaders
+├── plug_and_play/                 # 🆕 Plug-and-Play ML/DL Framework
+│   ├── core/                      # Core intelligence
+│   │   ├── orchestrator.py        # Main PlugAndPlayML class
+│   │   ├── data_analyzer.py       # Dataset analysis
+│   │   ├── problem_classifier.py  # Problem type detection
+│   │   ├── auto_preprocessor.py   # Smart preprocessing
+│   │   └── smart_matcher.py       # Model matching
+│   │
+│   ├── models/                    # Model implementations
+│   ├── pipelines/                 # Problem-specific pipelines
+│   ├── preprocessing/             # Preprocessing utilities
+│   ├── visualization/             # Adaptive viz engine
+│   └── evaluation/                # Evaluation & comparison
 │   ├── base.py                    # Base dataset loader
 │   ├── commonsense_qa.py          # CommonsenseQA dataset
 │   └── sentiment140.py            # Sentiment140 dataset
