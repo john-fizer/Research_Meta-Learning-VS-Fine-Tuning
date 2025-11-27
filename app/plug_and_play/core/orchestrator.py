@@ -25,6 +25,7 @@ from app.plug_and_play.core.data_analyzer import DataAnalyzer, DataCharacteristi
 from app.plug_and_play.core.problem_classifier import ProblemClassifier, ProblemDefinition
 from app.plug_and_play.core.auto_preprocessor import AutoPreprocessor
 from app.plug_and_play.core.smart_matcher import SmartMatcher, PipelineRecommendation
+from app.plug_and_play.utils.enhanced_loader import EnhancedDataLoader
 
 
 class PlugAndPlayML:
@@ -49,7 +50,8 @@ class PlugAndPlayML:
         max_models: int = 5,
         prefer_speed: bool = False,
         auto_visualize: bool = True,
-        verbose: bool = True
+        verbose: bool = True,
+        use_enhanced_loader: bool = True
     ):
         """
         Initialize PlugAndPlayML.
@@ -60,21 +62,25 @@ class PlugAndPlayML:
             prefer_speed: Prefer faster models over accuracy (default: False)
             auto_visualize: Automatically generate visualizations (default: True)
             verbose: Print detailed progress (default: True)
+            use_enhanced_loader: Use enhanced loader for misaligned data (default: True)
         """
         self.target_column = target_column
         self.max_models = max_models
         self.prefer_speed = prefer_speed
         self.auto_visualize = auto_visualize
         self.verbose = verbose
+        self.use_enhanced_loader = use_enhanced_loader
 
         # Initialize components
         self.data_analyzer = DataAnalyzer()
         self.problem_classifier = ProblemClassifier()
         self.preprocessor = AutoPreprocessor()
         self.matcher = SmartMatcher(max_models=max_models, prefer_speed=prefer_speed)
+        self.enhanced_loader = EnhancedDataLoader(auto_fix=True, verbose=verbose) if use_enhanced_loader else None
 
         # Storage for results
         self.raw_data = None
+        self.loading_metadata = None
         self.characteristics: Optional[DataCharacteristics] = None
         self.problem_definition: Optional[ProblemDefinition] = None
         self.pipeline_recommendation: Optional[PipelineRecommendation] = None
@@ -186,27 +192,45 @@ class PlugAndPlayML:
         return self.results
 
     def _load_data(self, data: Union[str, Path, pd.DataFrame]) -> pd.DataFrame:
-        """Load data from various sources."""
-        if isinstance(data, pd.DataFrame):
-            return data.copy()
+        """Load data from various sources with enhanced error handling."""
+        if self.use_enhanced_loader and self.enhanced_loader:
+            # Use enhanced loader for robust handling
+            df, metadata = self.enhanced_loader.load(data, self.target_column)
+            self.loading_metadata = metadata
 
-        # Handle file path
-        file_path = Path(data)
-        if not file_path.exists():
-            raise FileNotFoundError(f"File not found: {file_path}")
+            # Update target column if it was renamed during normalization
+            if (self.target_column and 'column_mapping' in metadata and
+                self.target_column in metadata['column_mapping']):
+                new_target = metadata['column_mapping'][self.target_column]
+                if self.verbose:
+                    self._print_info(
+                        f"Target column renamed: '{self.target_column}' → '{new_target}'"
+                    )
+                self.target_column = new_target
 
-        # Load based on extension
-        ext = file_path.suffix.lower()
-        if ext == '.csv':
-            return pd.read_csv(file_path)
-        elif ext in ['.xlsx', '.xls']:
-            return pd.read_excel(file_path)
-        elif ext == '.json':
-            return pd.read_json(file_path)
-        elif ext == '.parquet':
-            return pd.read_parquet(file_path)
+            return df
         else:
-            raise ValueError(f"Unsupported file format: {ext}")
+            # Use basic loader (legacy behavior)
+            if isinstance(data, pd.DataFrame):
+                return data.copy()
+
+            # Handle file path
+            file_path = Path(data)
+            if not file_path.exists():
+                raise FileNotFoundError(f"File not found: {file_path}")
+
+            # Load based on extension
+            ext = file_path.suffix.lower()
+            if ext == '.csv':
+                return pd.read_csv(file_path)
+            elif ext in ['.xlsx', '.xls']:
+                return pd.read_excel(file_path)
+            elif ext == '.json':
+                return pd.read_json(file_path)
+            elif ext == '.parquet':
+                return pd.read_parquet(file_path)
+            else:
+                raise ValueError(f"Unsupported file format: {ext}")
 
     def analyze_only(self, data: Union[str, Path, pd.DataFrame]) -> Dict[str, Any]:
         """
