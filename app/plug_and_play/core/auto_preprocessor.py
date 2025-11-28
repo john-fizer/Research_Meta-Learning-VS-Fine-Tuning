@@ -10,6 +10,7 @@ Automatically handles:
 - Time-based feature engineering
 - Class imbalance handling (SMOTE, undersampling, etc.)
 - Feature selection and dimensionality reduction
+- Automated feature engineering
 """
 
 import pandas as pd
@@ -24,6 +25,7 @@ from dataclasses import dataclass, field
 
 from app.plug_and_play.core.data_analyzer import DataCharacteristics
 from app.plug_and_play.core.problem_classifier import ProblemDefinition, ProblemType
+from app.plug_and_play.preprocessing.auto_feature_engineer import AutoFeatureEngineer
 
 
 @dataclass
@@ -43,12 +45,19 @@ class AutoPreprocessor:
     This handles ALL preprocessing automatically based on data analysis.
     """
 
-    def __init__(self):
-        """Initialize AutoPreprocessor."""
+    def __init__(self, enable_feature_engineering: bool = True):
+        """
+        Initialize AutoPreprocessor.
+
+        Args:
+            enable_feature_engineering: Enable automated feature engineering (default: True)
+        """
         self.pipeline = PreprocessingPipeline()
         self.characteristics = None
         self.problem_definition = None
         self.is_fitted = False
+        self.enable_feature_engineering = enable_feature_engineering
+        self.feature_engineer = AutoFeatureEngineer() if enable_feature_engineering else None
 
     def fit_transform(
         self,
@@ -101,15 +110,21 @@ class AutoPreprocessor:
         # Step 6: Scale numerical features
         X = self._scale_features(X)
 
-        # Step 7: Feature selection (if needed)
-        if len(X.columns) > 100:
+        # Step 7: Automated feature engineering
+        if self.enable_feature_engineering and self.feature_engineer:
+            X = self.feature_engineer.engineer_features(
+                X, y, characteristics, problem_definition
+            )
+
+        # Step 8: Feature selection (if needed and not already done)
+        if len(X.columns) > 100 and not self.enable_feature_engineering:
             X = self._feature_selection(X, y)
 
-        # Step 8: Handle class imbalance (if classification)
+        # Step 9: Handle class imbalance (if classification)
         if y is not None and characteristics.is_imbalanced:
             X, y = self._handle_imbalance(X, y)
 
-        # Step 9: Process target variable
+        # Step 10: Process target variable
         if y is not None:
             y = self._process_target(y)
 
